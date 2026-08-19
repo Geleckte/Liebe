@@ -1,0 +1,305 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --rose: #e8a4b8;
+  --rose-deep: #c96b8a;
+  --cream: #fdf6f0;
+  --blush: #f8e8ee;
+  --text: #5c3d4a;
+  --text-soft: #8a6570;
+  --shadow: rgba(92, 61, 74, 0.15);
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Quicksand", system-ui, sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+body {
+  min-height: 100dvh;
+  overflow: hidden;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: linear-gradient(165deg, var(--blush) 0%, var(--cream) 45%, #fce4ec 100%);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    calc(1.5rem + var(--safe-top))
+    1.25rem
+    calc(1.5rem + var(--safe-bottom));
+}
+
+/* Floating hearts background */
+.hearts-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.heart-float {
+  position: absolute;
+  bottom: -2rem;
+  font-size: 1rem;
+  color: var(--rose);
+  opacity: 0;
+  animation: floatUp var(--duration, 4s) ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6) rotate(0deg);
+  }
+  15% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-110vh) scale(1.1) rotate(var(--spin, 15deg));
+  }
+}
+
+/* Phases */
+.phase {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  z-index: 1;
+}
+
+.phase.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Start screen */
+.start-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 2rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  min-width: 12rem;
+  min-height: 12rem;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.heart-icon {
+  font-size: clamp(4rem, 18vw, 6rem);
+  color: var(--rose-deep);
+  line-height: 1;
+  filter: drop-shadow(0 8px 24px var(--shadow));
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.start-hint {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  animation: fadeHint 2s ease-in-out infinite;
+}
+
+@keyframes fadeHint {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.start-btn:active .heart-icon {
+  transform: scale(0.95);
+}
+
+/* Envelope & letter */
+.envelope-wrap {
+  perspective: 800px;
+  transform: scale(0.85);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.6s ease;
+}
+
+.envelope-wrap.open {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.envelope {
+  position: relative;
+  width: min(18rem, 78vw);
+  height: 12rem;
+}
+
+.envelope-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 9rem;
+  background: linear-gradient(180deg, #fff9f5 0%, #fce8ef 100%);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 12px 40px var(--shadow);
+  z-index: 1;
+}
+
+.envelope-body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, transparent 50%, rgba(232, 164, 184, 0.25) 50%);
+}
+
+.envelope-flap {
+  position: absolute;
+  top: 1.5rem;
+  left: 0;
+  right: 0;
+  height: 5.5rem;
+  background: linear-gradient(180deg, var(--rose) 0%, var(--rose-deep) 100%);
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.9s cubic-bezier(0.34, 1.2, 0.64, 1) 0.3s;
+  z-index: 3;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.envelope-wrap.open .envelope-flap {
+  transform: rotateX(-180deg);
+}
+
+.letter-card {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  width: calc(100% - 1.5rem);
+  max-height: 0;
+  overflow: hidden;
+  background: #fffcfa;
+  border-radius: 6px;
+  padding: 0 1.25rem;
+  text-align: center;
+  box-shadow: 0 4px 20px var(--shadow);
+  z-index: 2;
+  transition:
+    max-height 1s cubic-bezier(0.34, 1.2, 0.64, 1) 0.8s,
+    padding 0.8s ease 0.8s,
+    transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1) 1.2s;
+}
+
+.envelope-wrap.open .letter-card {
+  max-height: 24rem;
+  padding: 1.75rem 1.25rem 1.5rem;
+  transform: translateX(-50%) translateY(-7rem);
+}
+
+.letter-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+  margin-bottom: 0.75rem;
+}
+
+.letter-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.letter-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin-bottom: 1.25rem;
+}
+
+.letter-sign {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--rose-deep);
+}
+
+.tap-more {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  opacity: 0;
+  transition: opacity 0.5s ease 2s;
+}
+
+.tap-more.visible {
+  opacity: 0.7;
+}
+
+.phase-letter.active .tap-more:not([hidden]) {
+  display: block;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .heart-icon,
+  .start-hint,
+  .heart-float {
+    animation: none;
+  }
+
+  .envelope-flap,
+  .letter-card,
+  .envelope-wrap,
+  .phase {
+    transition-duration: 0.01ms;
+  }
+}
