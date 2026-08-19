@@ -2,13 +2,13 @@
  * Texte hier anpassen – Namen und persönliche Nachricht eintragen.
  */
 const MESSAGES = {
-  startHint: "Tippe hier",
-  letterLabel: "Für dich",
-  title: "Ich liebe dich",
+  startHint: "Tippe hier, Mia",
+  letterLabel: "Liebe Mia",
+  title: "Ich liebe dich, Mia",
   body:
-    "Jeder Tag mit dir fühlt sich ein bisschen heller an. " +
+    "Mia, jeder Tag mit dir fühlt sich ein bisschen heller an. " +
     "Du bist das Schönste in meinem Leben – und ich wollte dir das einfach sagen.",
-  sign: "Mit all meiner Liebe",
+  sign: "Für immer deins",
   tapMore: "Tippe für mehr Herzen",
 };
 
